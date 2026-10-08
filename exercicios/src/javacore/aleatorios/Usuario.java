@@ -1,75 +1,72 @@
 package javacore.aleatorios;
 
 public class Usuario {
+    private String nome;
     private String email;
-    private String senha;
     private int idade;
-    private double saldoPontos;
+    private String senha;
     private boolean ativo;
 
-    public Usuario(String email, String senha, int idade) {
-        this.email = email;
-        this.senha = senha;
-        this.idade = idade;
-        this.saldoPontos = 0;
+
+    public Usuario(String nome, String email, int idade, String senha) {
+        this.nome = nome;
+        if (email.contains("@") && email.length() > 5) {
+            this.email = email;
+            System.out.println("Email válido");
+        } else {
+            System.out.println("Email inválido");
+            return;
+        }
+        if (idade > 0) {
+            this.idade = idade;
+            System.out.println("Idade válida");
+        } else {
+            System.out.println("Idade inválida");
+            return;
+        }
+        if (senha.length() < 7) {
+            System.out.println("Senha inváida, precisa conter 7 caracteres");
+            return;
+        } else {
+            this.senha = senha;
+            System.out.println("Senha válida");
+        }
         this.ativo = true;
+
+
     }
 
-    // Validação de email
-    public boolean setEmail(String validarEmail) {
-        if (validarEmail.contains("@") && validarEmail.length() > 5 && validarEmail.equals(email)) {
-            //email = novoEmail; (Aqui não tem que receber um novo email, ele só tem que validar
-            // se o email que ele colocou primeiro esta certo, colocar email = novoEmail, vai fazer ele]
-            // receber um novo email, nao validar)
-            System.out.println("Email validado com sucesso");
+    public boolean autenticar(String senhaDigitada) {
+        if (senhaDigitada.equals(senha)) {
+            System.out.println("Senha autenticada com sucesso");
             return true;
         }
-        System.out.println("Erro na validação do email");
+        System.out.println("Senha não autenticada");
         return false;
     }
 
-    // Alteração de senha
-    public boolean alterarSenha(String senhaAntiga, String senhaNova) {
-        if (senhaAntiga.equals(senha) && senhaNova.length() >= 6 && !senhaNova.equals(senha)) {
-            senha = senhaNova;
-            System.out.println("Senha alterado com sucesso");
-            return true;
-        }
-        System.out.println("Senha não alterada, erro na alteração");
-        return false;
+    public void aniversario() {
+        System.out.println("Parabens, você acaba de fazer " + ++idade + " anos");
     }
 
-    // Ganhar pontos (10% de bônus se usuário tem 18+)
-    public void ganharPontos(double pontos) {
-        if (idade >= 18) {
-            saldoPontos += pontos + (pontos * 0.10);
-            System.out.println("Pontos adicionados com bônus");
-        } else {
-            saldoPontos += pontos;
-            System.out.println("Pontos adicionados sem bônus");
-        }
+    public void desativar() {
+        System.out.println("Desativando conta...");
+        ativo = false;
     }
 
-    // Gastar pontos
-    public boolean gastarPontos(double pontos) {
-        if (pontos <= saldoPontos) {
-            saldoPontos -= pontos;
-            return true;
+    public void alterarSenha(String senhaAtual, String novaSenha) {
+        if (!senhaAtual.equals(senha) || novaSenha.equals(senhaAtual) || novaSenha.length() < 7) {
+            System.out.println("Senha nova inválida");
+            return;
         }
-        return false;
+        senha = novaSenha;
+        System.out.println("Senha alterada com sucesso");
     }
 
-    // Desativar conta
-    public void desativarConta(String senhaConfirmacao) {
-        if (senhaConfirmacao.equals(senha)) {
-            ativo = false;
-            System.out.println("Conta desativada");
-        } else {
-            System.out.println("Erro ao desativar a conta");
-        }
+    public String getNome() {
+        return nome;
     }
 
-    // Getters
     public String getEmail() {
         return email;
     }
@@ -78,55 +75,40 @@ public class Usuario {
         return idade;
     }
 
-    public double getSaldoPontos() {
-        return saldoPontos;
-    }
-
     public boolean isAtivo() {
         return ativo;
     }
 
-    // Info do usuário
-    public String getInfo() {
-        return "Email: " + email + " | Idade: " + idade
-                + " | Pontos: " + saldoPontos + " | Ativo: " + ativo;
+    public void exibir() {
+        System.out.println("Nome: " + nome);
+        System.out.println("Email: " + email);
+        System.out.println("Idade: " + idade);
+        System.out.println("Ativo: " + ativo);
     }
 
     static void main(String[] args) {
-        Usuario usuario1 = new Usuario("zp0777@gmail.com", "0900", 18);
-
-
-        System.out.println(usuario1.setEmail("zp0777@gmail.com"));
+        Usuario u1 = new Usuario("Otavio", "otavio@email.com", 25, "senha123");
         System.out.println();
 
-        System.out.println(usuario1.alterarSenha("0900", "202020"));
-        System.out.println();
+        u1.exibir();
 
-        usuario1.ganharPontos(20);
-        System.out.println();
+        System.out.println("\n--- Autenticando com senha correta ---");
+        boolean ok = u1.autenticar("senha123");
+        System.out.println("Autenticado? " + ok);
 
-        System.out.println(usuario1.gastarPontos(10));
-        System.out.println();
+        System.out.println("\n--- Fazendo aniversário ---");
+        u1.aniversario();
+        u1.exibir();
 
-        System.out.println(usuario1.getEmail());
-        System.out.println();
+        System.out.println("\n--- Desativando usuário ---");
+        u1.desativar();
+        u1.exibir();
 
-        System.out.println(usuario1.getIdade());
-        System.out.println();
-
-        System.out.println(usuario1.getSaldoPontos());
-        System.out.println();
-
-        System.out.println(usuario1.isAtivo());
-        System.out.println();
-
-        usuario1.desativarConta("202020");
-
-        System.out.println(usuario1.isAtivo());
-
-        System.out.println(usuario1.getInfo());
-        System.out.println();
+        System.out.println("\n--- Trocando senha sem informar a atual ---");
+        u1.alterarSenha("senha123", "novasenha123");
 
 
     }
+
 }
+
